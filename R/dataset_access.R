@@ -1,8 +1,8 @@
 
-##' This function provides access to the baadclimate versioned dataset
+##' 
 ##'
 ##'
-##' @title Baadclimate Access 
+##' @title dataset access 
 ##'
 ##' @param version Version number.  The default will load the most
 ##'   recent version on your computer or the most recent version known
@@ -36,17 +36,12 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info_multi("FabriceSamonte/datastorrtest",
-                                 filenames=c("baad_with_map.csv", "sdat_10023_1_20190603_003205838.tif"),
-                                 read=c(read_tif, read_csv),
+                                 filenames=c("baad_with_map.csv"),
+                                 read=c(read_csv),
                                  path=path)
 }
 
 versioned_dataset_info <- function(path, version=NULL, operation="default") {
-  
-  ## version check 
-  #if(!is.null(version) & !(version %in% dataset_versions(local=FALSE))) {
-  #  stop(paste0("Version ", version, "does not exist."))
-  #}
   
   switch(operation, 
          
@@ -127,16 +122,6 @@ dataset_del <- function(version, path=NULL) {
 
 read_csv <- function(...) {
   read.csv(..., stringsAsFactors=FALSE)
-}
-
-read_tif <- function(...) {
-  raster::raster(...) %>% 
-    raster::as.data.frame(xy=TRUE) %>% 
-    tibble::as_tibble()
-}
-
-read_xl <- function(...) {
-  readxl::read_xls(...)
 }
 
 update_lookaside_table <- function(path=NULL) {
