@@ -35,7 +35,7 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   2. the file to download (plant_lookup.csv)
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
-  datastorr::github_release_info_multi("FabriceSamonte/versioned_data_templated",
+  datastorr::github_release_info_multi("FabriceSamonte/versioned_data_template",
                                  filenames=c("baad_with_map.csv"),
                                  read=c(read_csv),
                                  path=path)
@@ -154,9 +154,9 @@ update_lookaside_table <- function(path=NULL) {
   # update table
   # stored internally via usethis::use_data()
   if(!exists("lookaside_table")) {
-    lookaside_table <- tibble(version = character(),
-                              filename = character(),
-                              unpack_function = character())
+    lookaside_table <- tibble::tibble(version = character(),
+                                      filename = character(),
+                                      unpack_function = character())
   } else if(exists("lookaside_table")) { 
     # clean/reset entries to deal avoid repetition
     lookaside_table <- lookaside_table[lookaside_table$version %in% dataset_versions(local=FALSE) ,]
