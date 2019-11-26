@@ -35,8 +35,8 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   2. the file to download (plant_lookup.csv)
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
-  datastorr::github_release_info_multi("<repo>",
-                                 filenames=c("<filename>"),
+  datastorr::github_release_info_multi("FabriceSamonte/versioned_data_templated",
+                                 filenames=c("baad_with_map.csv"),
                                  read=c(read_csv),
                                  path=path)
 }
