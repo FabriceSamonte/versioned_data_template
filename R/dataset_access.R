@@ -36,8 +36,8 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info_multi("FabriceSamonte/versioned_data_template",
-                                 filenames=c("baad_with_map.csv"),
-                                 read=c(read_csv),
+                                 filenames=c("Globcover_Legend.xls", "sdat_10023_1_20190603_003205838.tif"),
+                                 read=c(read_xl, read_tif),
                                  path=path)
 }
 
@@ -78,8 +78,8 @@ versioned_dataset_info <- function(path, version=NULL, operation="default") {
              versioned_package_info$filenames <- c(unique(version_metadata$filename))
              versioned_package_info$read <- versioned_package_info$filenames %>% 
                lapply(function(x) { eval(parse(text = version_metadata[version_metadata$filename == x ,]$unpack_function)) } )
-             versioned_package_info
            } 
+           versioned_package_info
            
          },
          
@@ -122,6 +122,16 @@ dataset_del <- function(version, path=NULL) {
 
 read_csv <- function(...) {
   read.csv(..., stringsAsFactors=FALSE)
+}
+
+read_tif <- function(...) {
+  raster::raster(...) %>% 
+    raster::as.data.frame(xy=TRUE) %>% 
+    tibble::as_tibble()
+}
+
+read_xl <- function(...) {
+  readxl::read_xls(...)
 }
 
 update_lookaside_table <- function(path=NULL) {

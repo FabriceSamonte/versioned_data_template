@@ -1,6 +1,6 @@
 Package: datatemplate
 Title: datatemplate
-Version: 0.0.1
+Version: 1.0.0
 Date: 2019-10-31
 Description: description
 Depends:
@@ -11,7 +11,9 @@ Authors@R: as.person(c("Fabrice Samonte <your email here> [aut, cre]","Daniel Fa
 Maintainer: Fabrice Samonte <fabricesamonte@outlook.com>
 Imports:
     datastorr (>= 0.0.3),
-    tibble
+    tibble, 
+    raster,
+    readxl
 Suggests:
     testthat
 RoxygenNote: 6.1.1
