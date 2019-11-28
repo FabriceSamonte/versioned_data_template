@@ -1,6 +1,6 @@
 Package: datatemplate
 Title: datatemplate
-Version: 1.0.0
+Version: 0.0.1
 Date: 2019-10-31
 Description: description
 Depends:
@@ -8,12 +8,9 @@ Depends:
 License: MIT + file LICENSE
 LazyData: true
 Authors@R: as.person(c("Fabrice Samonte <your email here> [aut, cre]","Daniel Falster <her email here> [aut]"))
-Maintainer: Fabrice Samonte <fabricesamonte@outlook.com>
+Maintainer: Someone
 Imports:
-    datastorr (>= 0.0.3),
-    tibble, 
-    raster,
-    readxl
+    datastorr (>= 0.0.3)
 Suggests:
     testthat
 RoxygenNote: 6.1.1

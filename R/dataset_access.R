@@ -35,16 +35,15 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   2. the file to download (plant_lookup.csv)
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
-  datastorr::github_release_info_multi("FabriceSamonte/versioned_data_template",
-                                 filenames=c("Globcover_Legend.xls", "sdat_10023_1_20190603_003205838.tif"),
-                                 read=c(read_xl, read_tif),
+  datastorr::github_release_info_multi("<repo>",
+                                 filenames=c("<filenames>"),
+                                 read=c(read_csv),
                                  path=path)
 }
 
 versioned_dataset_info <- function(path, version=NULL, operation="default") {
   
   switch(operation, 
-         
          "get" = {
            versioned_package_info <- dataset_info(path)
            if(is.null(version)) {
@@ -55,14 +54,13 @@ versioned_dataset_info <- function(path, version=NULL, operation="default") {
            if(!(version %in% dataset_versions(local=FALSE))) {
              stop(paste0("Version ", version, " does not exist."))
            }
-           ## TODO : If requested version is ahead of package version
            if(version < local_package_version()) {
              version_metadata <- lookaside_table[lookaside_table$version == version ,]
              versioned_package_info$filenames <- c(unique(version_metadata$filename))
              versioned_package_info$read <- versioned_package_info$filenames %>% 
                lapply(function(x) { eval(parse(text = version_metadata[version_metadata$filename == x ,]$unpack_function)) } )
            } else if(version > local_package_version()) {
-             if(major_version_change(local_package_version(), version)) 
+             if(major_version_change(local_package_version(), version))
                stop(paste0("Could not retrieve version ", version, " due to outdated package. Please update your package."))
            }
            versioned_package_info
@@ -124,16 +122,6 @@ read_csv <- function(...) {
   read.csv(..., stringsAsFactors=FALSE)
 }
 
-read_tif <- function(...) {
-  raster::raster(...) %>% 
-    raster::as.data.frame(xy=TRUE) %>% 
-    tibble::as_tibble()
-}
-
-read_xl <- function(...) {
-  readxl::read_xls(...)
-}
-
 update_lookaside_table <- function(path=NULL) {
   package_info <- dataset_info(path)
   
@@ -152,13 +140,16 @@ update_lookaside_table <- function(path=NULL) {
   }
   
   # apply functions 
-  # TODO: return values unpack need to be gracefully handled
   message("Test: loading data into R environment")
   for(index in 1:length(package_info$filenames)) {
     switch(unpack(package_info$read[[index]], package_info$filenames[index]),
-           {
+           "error"= {
              stop()
-           })  
+           }, 
+           "ok" = {
+             message(paste0("Loading ", package_info$filenames[index]), " succeeded")
+           }
+    )  
   }
   
   # update table
@@ -173,8 +164,7 @@ update_lookaside_table <- function(path=NULL) {
   }
   
   for(index in 1:length(package_info$filenames)) {
-    lookaside_table <- append_lookaside_entry(lookaside_table, local_version, 
-                                              package_info$filename[index], package_info$read[[index]])
+    lookaside_table <- append_lookaside_entry(lookaside_table, local_version, package_info$filename[index], package_info$read[[index]])
   }
   usethis::use_data(lookaside_table, internal=TRUE, overwrite=TRUE)
 }
