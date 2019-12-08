@@ -35,9 +35,9 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   2. the file to download (plant_lookup.csv)
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
-  datastorr::github_release_info_multi("<repo>",
-                                 filenames=c("<filenames>"),
-                                 read=c(read_csv),
+  datastorr::github_release_info("FabriceSamonte/datastorrtest",
+                                 filename=c("Globcover_Legend.xls", "sdat_10023_1_20190603_003205838.tif"),
+                                 read=c(read_xls, read_raster),
                                  path=path)
 }
 
@@ -55,13 +55,10 @@ versioned_dataset_info <- function(path, version=NULL, operation="default") {
              stop(paste0("Version ", version, " does not exist."))
            }
            if(version < local_package_version()) {
-             version_metadata <- lookaside_table[lookaside_table$version == version ,]
-             versioned_package_info$filenames <- c(unique(version_metadata$filename))
-             versioned_package_info$read <- versioned_package_info$filenames %>% 
-               lapply(function(x) { eval(parse(text = version_metadata[version_metadata$filename == x ,]$unpack_function)) } )
+             versioned_package_info <- adjust_dataset_info_fields(versioned_package_info, version)
            } else if(version > local_package_version()) {
              if(major_version_change(local_package_version(), version))
-               stop(paste0("Could not retrieve version ", version, " due to outdated package. Please update your package."))
+               stop(paste0("Could not retrieve version ", version, " due to outdated package. Please update your package to retrieve newer versions of the data.s"))
            }
            versioned_package_info
          },
@@ -70,15 +67,16 @@ versioned_dataset_info <- function(path, version=NULL, operation="default") {
            versioned_package_info <- dataset_info(path)
            if(is.null(version)) { 
              versioned_package_info
-           ## TODO : If requested version is ahead of package version
+             ## TODO : If requested version is ahead of package version
            } else if(version < local_package_version()) {
-             version_metadata <- lookaside_table[lookaside_table$version == version ,]
-             versioned_package_info$filenames <- c(unique(version_metadata$filename))
-             versioned_package_info$read <- versioned_package_info$filenames %>% 
-               lapply(function(x) { eval(parse(text = version_metadata[version_metadata$filename == x ,]$unpack_function)) } )
+             ## TODO: this will be repeated when functionality for 
+             ## versions ahead of current package version TEST
+             if(!version %in% dataset_versions(local=FALSE)) {
+               stop(paste0("Version ", version, " does not exist."))
+             }
+             versioned_package_info <- adjust_dataset_info_fields(versioned_package_info, version)
            } 
            versioned_package_info
-           
          },
          
          "version" = {
@@ -148,8 +146,7 @@ update_lookaside_table <- function(path=NULL) {
            }, 
            "ok" = {
              message(paste0("Loading ", package_info$filenames[index]), " succeeded")
-           }
-    )  
+           })  
   }
   
   # update table

@@ -7,8 +7,6 @@ Depends:
     R (>= 3.1.0)
 License: MIT + file LICENSE
 LazyData: true
-Authors@R: as.person(c("Fabrice Samonte <your email here> [aut, cre]","Daniel Falster <her email here> [aut]"))
-Maintainer: Someone
 Imports:
     datastorr (>= 0.0.3)
 Suggests:
