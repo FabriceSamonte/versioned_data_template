@@ -36,8 +36,8 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info("FabriceSamonte/datastorrtest",
-                                 filename=c("Globcover_Legend.xls", "sdat_10023_1_20190603_003205838.tif"),
-                                 read=c(read_xls, read_raster),
+                                 filename=c("<filenames>"),
+                                 read=c("<function name>"),
                                  path=path)
 }
 
@@ -58,7 +58,7 @@ versioned_dataset_info <- function(path, version=NULL, operation="default") {
              versioned_package_info <- adjust_dataset_info_fields(versioned_package_info, version)
            } else if(version > local_package_version()) {
              if(major_version_change(local_package_version(), version))
-               stop(paste0("Could not retrieve version ", version, " due to outdated package. Please update your package to retrieve newer versions of the data.s"))
+               stop(paste0("Could not retrieve version ", version, " due to outdated package. Please update your package to retrieve newer versions of the data."))
            }
            versioned_package_info
          },
