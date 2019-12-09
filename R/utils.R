@@ -24,6 +24,20 @@ last <- function(x) {
   x[[length(x)]]
 }
 
+assert_file <- function(filename) {
+  if (!file.exists(filename)) {
+    stop(sprintf("%s doesn't exist or cannot be found", filename, 
+                 call. = FALSE))
+  }
+}
+
+assert_function <- function (x, name = deparse(substitute(x))) 
+{
+  if (!is.function(x)) {
+    stop(sprintf("%s must be a function", name), call. = FALSE)
+  }
+}
+
 is_version <- function(version) {
   !inherits(try(numeric_version(version), silent=TRUE), "try-error")
 }
