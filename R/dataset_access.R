@@ -125,7 +125,7 @@ update_lookaside_table <- function(path=NULL) {
   
   # version check 
   # prevents double entries 
-  local_version <- local_package_version()
+  local_version <- desc_version()
   if(local_version %in% dataset_versions(local=FALSE)) 
     stop(paste0("Version ", local_version, " already exists. Update version field in DESCRIPTION before calling."))
   
